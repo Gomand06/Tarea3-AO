@@ -12,40 +12,74 @@
 \usepackage{xcolor}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black,citecolor=blue!60!black]{hyperref}
+\usepackage[colorlinks=true,linkcolor=rojouanl,urlcolor=rojouanl,citecolor=cafeuanl]{hyperref}
 
-\geometry{margin=2.2cm}
+\geometry{margin=2.0cm}
 \graphicspath{{figures/}{../figures/}}
 
-\definecolor{optgreen}{RGB}{30,132,73}
-
-\title{\textbf{Tarea 3: Ajuste de Parámetros mediante Diseño de Experimentos (DOE)}\\[0.35em]
-\large Ajuste de la Temperatura Inicial $T_0$ en Recocido Simulado con 2-opt sobre TSP\\
-Enfoque Seleccionado: Opción A --- Diseño Factorial Completo $3 \times 3$}
-\author{Christopher Gómez Andrade \\
-Matrícula: \texttt{2225437}}
-\date{Noviembre de 2026}
+% Paleta Rojo con Café
+\definecolor{rojouanl}{RGB}{139,30,30}
+\definecolor{cafeuanl}{RGB}{92,58,33}
+\definecolor{cremauanl}{RGB}{253,248,245}
 
 \begin{document}
 
-\maketitle
+% ============================================================================
+% PORTADA
+% ============================================================================
+\begin{titlepage}
+\centering
+\vspace*{0.8cm}
 
-\begin{center}
-\textbf{Repositorio público en GitHub:} \\
-\url{https://github.com/Gomand06/Tarea3-AO}
-\end{center}
+\includegraphics[width=0.62\textwidth]{uanl_logo.png}
 
-\vspace{0.5em}
+\vspace{0.9cm}
+{\Large\bfseries\color{cafeuanl} Facultad de Ciencias Físico Matemáticas\par}
+\vspace{0.25cm}
+{\large\bfseries\color{rojouanl} Carrera de Licenciatura en Ciencias Computacionales\par}
 
+\vspace{0.5cm}
+{\color{cafeuanl}\rule{0.55\textwidth}{1.5pt}}
+\vspace{1.2cm}
+
+{\Huge\bfseries\color{rojouanl} DOE de AO\par}
+\vspace{0.5cm}
+{\large\color{cafeuanl}
+\textbf{Tarea 3 --- Ajuste de Parámetros con Diseño de Experimentos (DOE)}\\
+Ajuste de la Temperatura Inicial $T_0$ en Recocido Simulado con 2-opt sobre TSP\\
+\textit{Enfoque Seleccionado: Opción A --- Diseño Factorial Completo $3 \times 3$}
+\par}
+
+\vspace{1.6cm}
+\fcolorbox{cafeuanl}{cremauanl}{%
+\begin{minipage}{0.82\textwidth}
+\centering
+\vspace{0.35cm}
+\textbf{Alumno:} Christopher Gómez Andrade\\[0.3em]
+\textbf{Matrícula:} \texttt{2225437}\\[0.3em]
+\textbf{Carrera:} Carrera de Licenciatura en Ciencias Computacionales\\[0.3em]
+\textbf{Facultad:} Facultad de Ciencias Físico Matemáticas\\[0.3em]
+\textbf{Repositorio en GitHub:} \url{https://github.com/Gomand06/Tarea3-AO}
+\vspace{0.35cm}
+\end{minipage}%
+}
+
+\vfill
+{\color{cafeuanl}\bfseries San Nicolás de los Garza, Nuevo León $\cdot$ Noviembre de 2026\par}
+\end{titlepage}
+
+% ============================================================================
+% CONTENIDO PRINCIPAL
+% ============================================================================
 \begin{abstract}
-En este reporte se presenta el ajuste experimental del parámetro de temperatura inicial ($T_0$) del algoritmo de Recocido Simulado (\textit{Simulated Annealing}, SA) con vecindario \textit{2-opt} aplicado al Problema del Agente Viajero (TSP) Euclidiano 2D. Se empleó la \textbf{Opción A (Diseño Factorial Completo $3 \times 3$)} tomando como factor la temperatura inicial (niveles Bajo, Medio y Alto generados aleatoriamente a partir de la matrícula \texttt{2225437}) y como bloque el tamaño del problema $n \in \{5, 10, 15\}$, con 10 réplicas independientes por punto de diseño (90 corridas en total). El análisis de varianza (ANOVA de dos factores, $\alpha = 0.05$) confirmó que tanto la temperatura ($F = 5.8979$, $p = 0.004062$), como el tamaño del problema ($F = 573.0361$, $p = 1.56 \times 10^{-48}$) y su interacción ($F = 5.7310$, $p = 0.000411$) son estadísticamente significativos. Mediante remuestreo \textit{bootstrap} no paramétrico ($B = 10{,}000$) e intervalos de confianza del 95\%, se determinó que la temperatura óptima cambia al crecer la instancia: $T_0^* = 32.96$ (nivel \textbf{Bajo}) para $n = 5$ y $T_0^* = 77.66$ (nivel \textbf{Medio}) para $n = 10$ y $n = 15$.
+En este reporte se presenta el ajuste experimental del parámetro de temperatura inicial ($T_0$) del algoritmo de Recocido Simulado (\textit{Simulated Annealing}, SA) con vecindario \textit{2-opt} aplicado al Problema del Agente Viajero (TSP) Euclidiano 2D. Se empleó la \textbf{Opción A (Diseño Factorial Completo $3 \times 3$)} tomando como factor la temperatura inicial (niveles Bajo, Medio y Alto generados aleatoriamente a partir de la matrícula \texttt{2225437}) y como bloque el tamaño del problema $n \in \{5, 10, 15\}$, con 10 réplicas independientes por punto de diseño (90 corridas en total). El análisis de varianza (ANOVA de dos factores, $\alpha = 0.05$) confirmó que tanto la temperatura ($F = 5.8979$, $p = 0.004062$), como el tamaño del problema ($F = 573.0361$, $p = 1.56 \times 10^{-48}$) y su interacción ($F = 5.7310$, $p = 0.000411$) son estadísticamente significativos. Mediante remuestreo \textit{bootstrap} no paramétrico ($B = 10{,}000$) e intervalos de confianza del 95\%, se determinó que la temperatura óptima cambia al crecer la instancia: $T_0^* = 32.9556$ (nivel \textbf{Bajo}) para $n = 5$ y $T_0^* = 77.6556$ (nivel \textbf{Medio}) para $n = 10$ y $n = 15$.
 \end{abstract}
 
-\section{Diseño Experimental y Generación de Niveles}
+\section{\color{rojouanl} Diseño Experimental y Generación de Niveles de Temperatura}
 
 Siguiendo el protocolo experimental de la \textbf{Opción A (Diseño Factorial Completo)}, se estableció un experimento factorial $3 \times 3$ con 10 réplicas independientes por combinación (semillas distintas por réplica), totalizando 90 ejecuciones.
 
-\subsection{Generación Aleatoria de Niveles de Temperatura}
+\subsection{\color{cafeuanl} Generación Aleatoria de Niveles de Temperatura}
 Al inicio del estudio se fijó una sola semilla aleatoria igual a la matrícula del estudiante (\texttt{2225437}) mediante \texttt{random.seed(2225437); r = random.random()}, obteniéndose el valor único:
 \[
 r = 0.7148901388751733
@@ -67,7 +101,7 @@ Alto  & $0.3 \cdot r + 0.6$ & $0.814467$ & $122.3556$ \\
 \end{tabular}
 \end{table}
 
-\section{Implementación del Algoritmo e Instancias TSP}
+\section{\color{rojouanl} Implementación del Algoritmo e Instancias TSP}
 
 El algoritmo y el experimento fueron implementados desde cero en Python (\texttt{src/tsp\_sa.py} y \texttt{src/doe\_experiment.py}):
 \begin{itemize}
@@ -76,7 +110,7 @@ El algoritmo y el experimento fueron implementados desde cero en Python (\texttt
     \item \textbf{Criterio de Metropolis y Enfriamiento:} Los movimientos con $\Delta E \le 0$ se aceptan siempre; los deteriorantes ($\Delta E > 0$) se aceptan con probabilidad $\exp(-\Delta E / T)$. La temperatura sigue un enfriamiento geométrico $T_{k+1} = \alpha \, T_k$ con $\alpha = 0.88$ durante $18$ épocas de $n$ evaluaciones cada una ($\text{max\_iter} = 18n$), reportando el costo del tour al término del proceso de recocido.
 \end{itemize}
 
-\section{Resultados del ANOVA de Dos Factores}
+\section{\color{rojouanl} Resultados del ANOVA de Dos Factores}
 
 Se ajustó el modelo lineal con interacción \texttt{costo $\sim$ C(temperatura) * C(tamano)} sobre las 90 observaciones mediante \texttt{statsmodels} (ANOVA Tipo II, nivel de significancia $\alpha = 0.05$). Los resultados se presentan en el Cuadro~\ref{tab:anova}.
 
@@ -103,7 +137,7 @@ Se ajustó el modelo lineal con interacción \texttt{costo $\sim$ C(temperatura)
     \item \textbf{Efecto de interacción Temperatura $\times$ Tamaño ($p = 0.000411$):} Al ser $p < 0.05$, se rechaza la hipótesis de independencia entre factores. Esto demuestra estadísticamente que \emph{el efecto de la temperatura inicial $T_0$ sobre el costo del tour depende del tamaño del problema $n$}, por lo que el análisis debe realizarse por separado para cada tamaño mediante intervalos \textit{bootstrap}.
 \end{enumerate}
 
-\section{Visualización: Efectos Principales, Interacción y Bootstrap}
+\section{\color{rojouanl} Visualización: Efectos Principales, Interacción y Bootstrap}
 
 En la Figura~\ref{fig:main_effects} se muestran los efectos principales marginales de ambos factores. En promedio global, el nivel \textbf{Medio} ($T_0 = 77.66$) presenta la menor media marginal ($2695.0$), frente a \textbf{Alto} ($2748.2$) y \textbf{Bajo} ($2782.5$).
 
@@ -114,7 +148,7 @@ En la Figura~\ref{fig:main_effects} se muestran los efectos principales marginal
     \label{fig:main_effects}
 \end{figure}
 
-La Figura~\ref{fig:interaction} evidencia la interacción Temperatura $\times$ Tamaño. En el panel derecho (incremento porcentual respecto al óptimo de cada bloque) se aprecia claramente el cruce y cambio de pendiente: para $n = 5$ el error crece ligeramente al subir la temperatura, para $n = 10$ las medianas coinciden en el óptimo global y las diferencias son marginales, mientras que para $n = 15$ se forma una pronunciada curva en ``U'' donde tanto $T_{\text{Bajo}}$ ($+10.02\%$ sobre la mejor mediana) como $T_{\text{Alto}}$ ($+4.63\%$) pierden desempeño respecto a $T_{\text{Medio}}$.
+La Figura~\ref{fig:interaction} evidencia la interacción Temperatura $\times$ Tamaño. En el panel derecho (incremento porcentual respecto al óptimo de cada bloque) se aprecia claramente el cambio de pendiente: para $n = 5$ el error crece ligeramente al subir la temperatura, para $n = 10$ las medianas coinciden en el óptimo global y las diferencias son marginales, mientras que para $n = 15$ se forma una pronunciada curva en ``U'' donde tanto $T_{\text{Bajo}}$ ($+10.02\%$ sobre la mejor mediana) como $T_{\text{Alto}}$ ($+4.63\%$) pierden desempeño respecto a $T_{\text{Medio}}$.
 
 \begin{figure}[H]
     \centering
@@ -128,13 +162,13 @@ Dado que los tres términos del ANOVA fueron significativos, se calcularon la me
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.98\textwidth]{bootstrap_intervals.pdf}
-    \caption{Distribución de las 10 réplicas, mediana \textit{bootstrap} ($B = 10{,}000$) e IC 95\% para cada punto de diseño. En verde se resalta la temperatura óptima seleccionada por tamaño.}
+    \caption{Distribución de las 10 réplicas, mediana \textit{bootstrap} ($B = 10{,}000$) e IC 95\% para cada punto de diseño. En rojo se resalta la temperatura óptima seleccionada por tamaño.}
     \label{fig:bootstrap}
 \end{figure}
 
-\section{Estimación Bootstrap y Tabla Resumen de Parámetros Óptimos}
+\section{\color{rojouanl} Estimación Bootstrap por Punto de Diseño}
 
-El Cuadro~\ref{tab:bootstrap_all} detalla las estadísticas muestrales y \textit{bootstrap} para los 9 puntos de diseño, mientras que el Cuadro~\ref{tab:optimal_summary} resume la temperatura seleccionada como óptima para cada tamaño $n \in \{5, 10, 15\}$.
+El Cuadro~\ref{tab:bootstrap_all} detalla las estadísticas muestrales y \textit{bootstrap} para los 9 puntos de diseño.
 
 \begin{table}[H]
 \centering
@@ -144,52 +178,52 @@ El Cuadro~\ref{tab:bootstrap_all} detalla las estadísticas muestrales y \textit
 \toprule
 \textbf{$n$} & \textbf{Nivel} & \textbf{$T_0$} & \textbf{Media} & \textbf{Desv. Est.} & \textbf{Mediana Boot.} & \textbf{IC 95\% Inf.} & \textbf{IC 95\% Sup.} \\
 \midrule
-5  & \textcolor{optgreen}{\textbf{Bajo*}}  & $32.96$  & $2314.39$ & $2.96$   & $\mathbf{2313.45}$ & $2313.45$ & $2313.45$ \\
+5  & \textcolor{rojouanl}{\textbf{Bajo*}}  & $32.96$  & $2314.39$ & $2.96$   & $\mathbf{2313.45}$ & $2313.45$ & $2313.45$ \\
 5  & Medio                                 & $77.66$  & $2316.27$ & $4.53$   & $2313.45$          & $2313.45$ & $2322.83$ \\
 5  & Alto                                  & $122.36$ & $2318.14$ & $4.94$   & $2318.14$          & $2313.45$ & $2322.83$ \\
 \midrule
 10 & Bajo                                  & $32.96$  & $2727.10$ & $71.04$  & $2676.45$          & $2676.45$ & $2785.73$ \\
-10 & \textcolor{optgreen}{\textbf{Medio*}} & $77.66$  & $2722.74$ & $60.23$  & $\mathbf{2676.45}$ & $2676.45$ & $2785.73$ \\
+10 & \textcolor{rojouanl}{\textbf{Medio*}} & $77.66$  & $2722.74$ & $60.23$  & $\mathbf{2676.45}$ & $2676.45$ & $2785.73$ \\
 10 & Alto                                  & $122.36$ & $2722.94$ & $60.56$  & $2676.45$          & $2676.45$ & $2785.73$ \\
 \midrule
 15 & Bajo                                  & $32.96$  & $3306.02$ & $192.23$ & $3331.42$          & $3129.73$ & $3468.36$ \\
-15 & \textcolor{optgreen}{\textbf{Medio*}} & $77.66$  & $3045.93$ & $73.45$  & $\mathbf{3028.08}$ & $2988.68$ & $3061.99$ \\
+15 & \textcolor{rojouanl}{\textbf{Medio*}} & $77.66$  & $3045.93$ & $73.45$  & $\mathbf{3028.08}$ & $2988.68$ & $3061.99$ \\
 15 & Alto                                  & $122.36$ & $3203.49$ & $185.20$ & $3168.24$          & $3045.20$ & $3395.72$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\section{\color{rojouanl} Entregable Final: Tabla Resumen y Análisis}
+
 \begin{table}[H]
 \centering
-\caption{Tabla resumen de la temperatura inicial óptima ($T_0^*$) para cada tamaño del TSP.}
+\caption{Tabla resumen de la temperatura inicial óptima ($T_0^*$), mediana bootstrap e IC 95\% para $n = 5, 10, 15$.}
 \label{tab:optimal_summary}
 \begin{tabular}{@{}ccccc@{}}
 \toprule
-\textbf{Tamaño ($n$)} & \textbf{Nivel Óptimo} & \textbf{Temperatura $T_0^*$} & \textbf{Mediana Bootstrap} & \textbf{IC 95\% Bootstrap} \\
+\textbf{Tamaño ($n$)} & \textbf{Óptimo Exacto} & \textbf{Nivel y $T_0^*$ Óptima} & \textbf{Mediana Bootstrap} & \textbf{IC 95\% Bootstrap} \\
 \midrule
-$5$  & Bajo  & $32.9556$ & $2313.4535$ & $[2313.4535,\; 2313.4535]$ \\
-$10$ & Medio & $77.6556$ & $2676.4468$ & $[2676.4468,\; 2785.7350]$ \\
-$15$ & Medio & $77.6556$ & $3028.0827$ & $[2988.6778,\; 3061.9949]$ \\
+$5$  & $2313.4535$ & \textcolor{rojouanl}{\textbf{Bajo}} ($32.9556$)  & $2313.4535$ & $[2313.4535,\; 2313.4535]$ \\
+$10$ & $2676.4468$ & \textcolor{rojouanl}{\textbf{Medio}} ($77.6556$) & $2676.4468$ & $[2676.4468,\; 2785.7350]$ \\
+$15$ & $2988.6778$ & \textcolor{rojouanl}{\textbf{Medio}} ($77.6556$) & $3028.0827$ & $[2988.6778,\; 3061.9949]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Análisis y Respuestas a las Preguntas}
-
-\subsection{¿Cuál fue el mejor parámetro para cada tamaño y cómo se llegó a esa conclusión?}
+\subsection{\color{cafeuanl} Mejor parámetro encontrado por tamaño y justificación (ANOVA + Bootstrap)}
 A partir de la significancia confirmada por el ANOVA de dos factores tanto para la temperatura ($p = 0.004062$) como para la interacción Temperatura $\times$ Tamaño ($p = 0.000411$), se evaluaron los intervalos \textit{bootstrap} dentro de cada bloque $n$:
 \begin{itemize}
-    \item \textbf{Para $n = 5$:} El óptimo fue el nivel \textbf{Bajo} ($T_0^* = 32.96$). Alcanzó la mediana exacta del óptimo global Held-Karp ($2313.45$) con un intervalo de confianza del 95\% colapsado en $[2313.45, 2313.45]$ (9 de 10 réplicas convergieron al óptimo) y la menor media muestral ($2314.39$, desviación $2.96$). En cambio, el nivel Alto ($122.36$) elevó la mediana a $2318.14$ debido a que, tras 18 épocas ($T_f = 12.24$), aún conserva agitación térmica residual.
-    \item \textbf{Para $n = 10$:} Los tres niveles empataron en mediana \textit{bootstrap} en el óptimo exacto ($2676.45$, IC 95\% $[2676.45, 2785.73]$). Aplicando el criterio de desempate por menor costo medio y menor variabilidad entre réplicas, se seleccionó el nivel \textbf{Medio} ($T_0^* = 77.66$), que obtuvo la menor media muestral ($2722.74$) y la menor desviación estándar ($60.23$, frente a $71.04$ de Bajo).
-    \item \textbf{Para $n = 15$:} El óptimo indiscutible fue el nivel \textbf{Medio} ($T_0^* = 77.66$), con mediana \textit{bootstrap} de $3028.08$ (a solo $1.32\%$ del óptimo exacto Held-Karp de $2988.68$) y un IC 95\% sumamente estrecho de $[2988.68, 3061.99]$. Nótese que este intervalo de confianza es \textbf{completamente disjunto} respecto al del nivel Bajo ($[3129.73, 3468.36]$, mediana $3331.42$), lo que prueba con más del 95\% de confianza que $T_0 = 77.66$ supera significativamente a $T_0 = 32.96$. Asimismo, Medio mejora sustancialmente la precisión y mediana frente a Alto ($3168.24$, IC $[3045.20, 3395.72]$).
+    \item \textbf{Para $n = 5$ $\rightarrow$ Nivel Bajo ($T_0^* = 32.9556$):} Alcanzó la mediana exacta del óptimo global Held-Karp ($2313.4535$) con un intervalo de confianza del 95\% colapsado en $[2313.4535, 2313.4535]$ (9 de 10 réplicas convergieron al óptimo) y la menor media muestral ($2314.39$, desviación $2.96$). En cambio, el nivel Alto ($122.36$) elevó la mediana a $2318.14$ debido a que conserva agitación térmica residual al concluir las 18 épocas.
+    \item \textbf{Para $n = 10$ $\rightarrow$ Nivel Medio ($T_0^* = 77.6556$):} Los tres niveles empataron en mediana \textit{bootstrap} en el óptimo exacto ($2676.4468$, IC 95\% $[2676.4468, 2785.7350]$). Aplicando el criterio de desempate por menor costo medio y menor variabilidad entre réplicas, se seleccionó el nivel \textbf{Medio}, que obtuvo la menor media muestral ($2722.74$ frente a $2727.10$ de Bajo) y la menor desviación estándar ($60.23$ frente a $71.04$ de Bajo).
+    \item \textbf{Para $n = 15$ $\rightarrow$ Nivel Medio ($T_0^* = 77.6556$):} El óptimo indiscutible fue \textbf{Medio}, con mediana \textit{bootstrap} de $3028.0827$ (a solo $1.32\%$ del óptimo exacto Held-Karp de $2988.6778$) y un IC 95\% estrecho de $[2988.6778, 3061.9949]$. Este intervalo de confianza es \textbf{completamente disjunto} respecto al del nivel Bajo ($[3129.7321, 3468.3587]$, mediana $3331.42$), probando con más del 95\% de confianza que $T_0 = 77.66$ supera significativamente a $T_0 = 32.96$, y además mejora sustancialmente la mediana y estabilidad frente a Alto ($3168.24$, IC $[3045.1977, 3395.7156]$).
 \end{itemize}
 
-\subsection{¿La temperatura óptima cambia con el tamaño del problema? ¿Hay una tendencia clara entre $n$ y $T^*$?}
-\textbf{Sí, la temperatura óptima cambia con el tamaño $n$ y se observa una tendencia creciente en la energía térmica inicial requerida conforme aumenta $n$}, respaldada por la interacción altamente significativa del ANOVA ($F = 5.7310$, $p = 0.000411$):
+\subsection{\color{cafeuanl} ¿La temperatura óptima cambia con el tamaño del problema? ¿Hay una tendencia clara entre $n$ y $T^*$?}
+\textbf{Sí, la temperatura óptima cambia con el tamaño $n$ y exhibe una tendencia creciente en la energía térmica inicial requerida conforme aumenta $n$}, pasando de $T_0^* = 32.9556$ (Bajo) en $n = 5$ a $T_0^* = 77.6556$ (Medio) en $n = 10$ y $n = 15$:
 \begin{enumerate}
-    \item \textbf{De $n = 5$ a $n = 10, 15$, $T^*$ aumenta de $32.96$ (Bajo) a $77.66$ (Medio):} El espacio de tours no dirigidos crece de manera factorial como $(n-1)!/2$, pasando de apenas $12$ recorridos en $n = 5$ a $181{,}440$ en $n = 10$ y a $4.36 \times 10^{10}$ en $n = 15$. En $n = 5$ prácticamente no existen óptimos locales profundos para el operador 2-opt, por lo que una temperatura baja favorece una rápida explotación hacia el óptimo global sin introducir ruido térmico al final del enfriamiento.
-    \item \textbf{Proliferación de mínimos locales en $n = 15$:} Al crecer $n$ a $15$, el paisaje de energía desarrolla múltiples óptimos locales subóptimos. Una temperatura baja ($T_0 = 32.96$) produce un congelamiento prematuro: el algoritmo rechaza casi de inmediato los movimientos $\Delta E > 0$ y queda atrapado en recorridos promedio un $10\%$ más costosos. Por ello, al aumentar $n$ se vuelve indispensable incrementar $T_0$ hacia el nivel Medio ($77.66$) para atravesar barreras de energía en las primeras épocas.
-    \item \textbf{Límite superior térmico (equilibrio exploración--explotación):} Si bien $T^*$ tiende a subir con $n$, no crece de forma ilimitada bajo un presupuesto fijo de enfriamiento: en $n = 15$, elevar demasiado $T_0$ al nivel Alto ($122.36$) degrada nuevamente la solución ($3168.24$ vs.\ $3028.08$) porque la cadena termina las 18 épocas con temperatura residual alta ($T_f = 12.24$) sin consolidar la fase de explotación. En síntesis, $T^*$ muestra una tendencia ascendente con $n$ desde regímenes puramente explotativos (Bajo en $n=5$) hacia temperaturas intermedias balanceadas (Medio en $n=10, 15$).
+    \item \textbf{Crecimiento factorial del espacio de tours:} El número de recorridos no dirigidos crece como $(n-1)!/2$, pasando de apenas $12$ en $n = 5$ a $181{,}440$ en $n = 10$ y $4.36 \times 10^{10}$ en $n = 15$. En $n = 5$ casi no existen óptimos locales profundos, por lo que una temperatura inicial baja maximiza la explotación sin introducir ruido final.
+    \item \textbf{Atrapamiento en mínimos locales en $n = 15$:} Al crecer $n$ proliferan los óptimos locales 2-opt subóptimos. Una temperatura baja ($T_0 = 32.96$) produce congelamiento prematuro y deja al algoritmo en soluciones un $10\%$ más costosas, haciendo necesario subir $T_0$ al nivel Medio ($77.66$) para escapar de esas cuencas.
+    \item \textbf{Equilibrio exploración--explotación bajo horizonte finito:} Aunque $T^*$ tiende a subir con $n$, exceder la temperatura al nivel Alto ($122.36$) en $n = 15$ vuelve a degradar el resultado ($3168.24$ vs.\ $3028.08$) porque la cadena termina las 18 épocas con temperatura residual alta ($T_f = 12.24$). En síntesis, conforme crece $n$, $T^*$ se desplaza de un régimen frío de rápida explotación (Bajo) hacia valores intermedios equilibrados (Medio).
 \end{enumerate}
 
 \end{document}

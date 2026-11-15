@@ -26,7 +26,7 @@ FIGURES_DIR = ROOT_DIR / "figures"
 REPORT_FIGURES_DIR = ROOT_DIR / "report" / "figures"
 
 NIVEL_ORDEN = ["Bajo", "Medio", "Alto"]
-PALETTE_TAMANO = {5: "#1f77b4", 10: "#ff7f0e", 15: "#2ca02c"}
+PALETTE_TAMANO = {5: "#5C3A21", 10: "#A0522D", 15: "#8B1E1E"}
 
 
 def _configure_style() -> None:
@@ -91,7 +91,7 @@ def plot_main_effects(raw_df: pd.DataFrame) -> None:
         temp_ci_high.append(max(0.0, hi - med))
 
     x_pos = np.arange(len(NIVEL_ORDEN))
-    ax.plot(x_pos, temp_means, marker="o", lw=2.2, color="#1b4f72", label="Media muestral")
+    ax.plot(x_pos, temp_means, marker="o", lw=2.2, color="#8B1E1E", label="Media muestral")
     ax.errorbar(
         x_pos,
         temp_medians,
@@ -99,11 +99,11 @@ def plot_main_effects(raw_df: pd.DataFrame) -> None:
         fmt="s--",
         lw=1.8,
         capsize=5,
-        color="#d35400",
+        color="#6D4C41",
         label="Mediana (IC 95% bootstrap)",
     )
     for x, m in zip(x_pos, temp_means):
-        ax.annotate(f"{m:.1f}", (x, m), textcoords="offset points", xytext=(0, 8), ha="center", fontsize=8.5, color="#1b4f72")
+        ax.annotate(f"{m:.1f}", (x, m), textcoords="offset points", xytext=(0, 8), ha="center", fontsize=8.5, color="#8B1E1E")
     ax.set_xticks(x_pos)
     ax.set_xticklabels(temp_labels)
     ax.set_xlabel("Nivel de Temperatura Inicial ($T_0$)")
@@ -128,7 +128,7 @@ def plot_main_effects(raw_df: pd.DataFrame) -> None:
         size_ci_high.append(max(0.0, hi - med))
 
     x_s = np.arange(len(sizes))
-    ax.plot(x_s, size_means, marker="o", lw=2.2, color="#1b4f72", label="Media muestral")
+    ax.plot(x_s, size_means, marker="o", lw=2.2, color="#8B1E1E", label="Media muestral")
     ax.errorbar(
         x_s,
         size_medians,
@@ -136,11 +136,11 @@ def plot_main_effects(raw_df: pd.DataFrame) -> None:
         fmt="s--",
         lw=1.8,
         capsize=5,
-        color="#d35400",
+        color="#6D4C41",
         label="Mediana (IC 95% bootstrap)",
     )
     for x, m in zip(x_s, size_means):
-        ax.annotate(f"{m:.1f}", (x, m), textcoords="offset points", xytext=(0, 8), ha="center", fontsize=8.5, color="#1b4f72")
+        ax.annotate(f"{m:.1f}", (x, m), textcoords="offset points", xytext=(0, 8), ha="center", fontsize=8.5, color="#8B1E1E")
     ax.set_xticks(x_s)
     ax.set_xticklabels([f"n = {n}" for n in sizes])
     ax.set_xlabel("Tamaño del Problema TSP (n)")
@@ -247,7 +247,7 @@ def plot_bootstrap_intervals(raw_df: pd.DataFrame, boot_df: pd.DataFrame, opt_df
                 pts,
                 s=22,
                 alpha=0.45,
-                color="#5d6d7e",
+                color="#8D6E63",
                 zorder=2,
             )
 
@@ -258,7 +258,7 @@ def plot_bootstrap_intervals(raw_df: pd.DataFrame, boot_df: pd.DataFrame, opt_df
             lo = float(row["ic_95_inf"])
             hi = float(row["ic_95_sup"])
             is_opt = lvl == opt_nivel
-            color = "#1e8449" if is_opt else "#2874a6"
+            color = "#8B1E1E" if is_opt else "#6D4C41"
             marker = "D" if is_opt else "o"
             ms = 7.5 if is_opt else 6.0
             ax.errorbar(

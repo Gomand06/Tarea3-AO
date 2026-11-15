@@ -1,6 +1,7 @@
 """
-Generación del reporte académico en PDF (report/reporte_tarea3.pdf) a partir de
-los datos y gráficas reales producidos por el experimento DOE (Opción A).
+Generación del reporte académico en PDF (report/reporte_tarea3.pdf) con portada
+institucional, paleta Rojo con Café y los datos/gráficas reales del experimento
+DOE de AO (Opción A).
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ from reportlab.platypus import (
     HRFlowable,
     Image,
     KeepTogether,
+    PageBreak,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -43,6 +45,19 @@ PDF_PATH = REPORT_DIR / "reporte_tarea3.pdf"
 REPO_URL = "https://github.com/Gomand06/Tarea3-AO"
 AUTOR = "Christopher Gómez Andrade"
 MATRICULA = "2225437"
+FACULTAD = "Facultad de Ciencias Físico Matemáticas"
+CARRERA = "Carrera de Licenciatura en Ciencias Computacionales"
+TITULO_TRABAJO = "DOE de AO"
+
+# Paleta Rojo con Café
+COLOR_ROJO = colors.HexColor("#8B1E1E")
+COLOR_ROJO_SUAVE = colors.HexColor("#F9EBEA")
+COLOR_CAFE = colors.HexColor("#5C3A21")
+COLOR_CAFE_CLARO = colors.HexColor("#8B5A2B")
+COLOR_CREMA = colors.HexColor("#FDF8F5")
+COLOR_CREMA_BORDE = colors.HexColor("#D7C4BA")
+COLOR_TEXTO = colors.HexColor("#2B1D16")
+COLOR_MUTED = colors.HexColor("#7B5E50")
 
 
 def _register_fonts() -> None:
@@ -64,41 +79,55 @@ def _register_fonts() -> None:
 
 def _build_styles() -> dict[str, ParagraphStyle]:
     base = getSampleStyleSheet()
-    navy = colors.HexColor("#1B365D")
-    slate = colors.HexColor("#334155")
-    dark = colors.HexColor("#1E293B")
-    muted = colors.HexColor("#64748B")
-
     return {
-        "title": ParagraphStyle(
-            "TitleCustom",
-            parent=base["Title"],
+        "cover_facultad": ParagraphStyle(
+            "CoverFacultad",
+            parent=base["Normal"],
             fontName="DejaVu-Bold",
-            fontSize=15.5,
-            leading=19.5,
-            textColor=navy,
+            fontSize=15,
+            leading=20,
+            textColor=COLOR_CAFE,
             alignment=TA_CENTER,
             spaceAfter=4,
         ),
-        "subtitle": ParagraphStyle(
-            "SubtitleCustom",
+        "cover_carrera": ParagraphStyle(
+            "CoverCarrera",
+            parent=base["Normal"],
+            fontName="DejaVu-Bold",
+            fontSize=12,
+            leading=16,
+            textColor=COLOR_ROJO,
+            alignment=TA_CENTER,
+            spaceAfter=18,
+        ),
+        "cover_title": ParagraphStyle(
+            "CoverTitle",
+            parent=base["Title"],
+            fontName="DejaVu-Bold",
+            fontSize=28,
+            leading=34,
+            textColor=COLOR_ROJO,
+            alignment=TA_CENTER,
+            spaceAfter=10,
+        ),
+        "cover_subtitle": ParagraphStyle(
+            "CoverSubtitle",
             parent=base["Normal"],
             fontName="DejaVu",
-            fontSize=10.5,
-            leading=14,
-            textColor=slate,
+            fontSize=11.5,
+            leading=16.5,
+            textColor=COLOR_CAFE,
             alignment=TA_CENTER,
             spaceAfter=8,
         ),
-        "meta": ParagraphStyle(
-            "MetaCustom",
+        "cover_meta": ParagraphStyle(
+            "CoverMeta",
             parent=base["Normal"],
             fontName="DejaVu",
-            fontSize=9.2,
-            leading=13,
-            textColor=dark,
+            fontSize=10.8,
+            leading=16,
+            textColor=COLOR_TEXTO,
             alignment=TA_CENTER,
-            spaceAfter=8,
         ),
         "h1": ParagraphStyle(
             "H1Custom",
@@ -106,8 +135,8 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu-Bold",
             fontSize=12,
             leading=15,
-            textColor=navy,
-            spaceBefore=12,
+            textColor=COLOR_ROJO,
+            spaceBefore=11,
             spaceAfter=5,
             keepWithNext=True,
         ),
@@ -117,7 +146,7 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu-Bold",
             fontSize=10.2,
             leading=13.5,
-            textColor=colors.HexColor("#0F4C81"),
+            textColor=COLOR_CAFE,
             spaceBefore=8,
             spaceAfter=3,
             keepWithNext=True,
@@ -128,7 +157,7 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu",
             fontSize=9.2,
             leading=13.2,
-            textColor=dark,
+            textColor=COLOR_TEXTO,
             alignment=TA_JUSTIFY,
             spaceAfter=5,
         ),
@@ -138,19 +167,19 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu",
             fontSize=9.0,
             leading=12.8,
-            textColor=dark,
+            textColor=COLOR_TEXTO,
             alignment=TA_JUSTIFY,
             leftIndent=14,
             firstLineIndent=-9,
-            spaceAfter=3.5,
+            spaceAfter=3.8,
         ),
         "abstract": ParagraphStyle(
             "AbstractCustom",
             parent=base["Normal"],
             fontName="DejaVu",
-            fontSize=8.8,
-            leading=12.5,
-            textColor=dark,
+            fontSize=8.9,
+            leading=12.6,
+            textColor=COLOR_TEXTO,
             alignment=TA_JUSTIFY,
         ),
         "caption": ParagraphStyle(
@@ -159,7 +188,7 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu-Oblique",
             fontSize=8.3,
             leading=11.2,
-            textColor=muted,
+            textColor=COLOR_MUTED,
             alignment=TA_CENTER,
             spaceBefore=3,
             spaceAfter=8,
@@ -170,7 +199,7 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu-Bold",
             fontSize=8.8,
             leading=11.5,
-            textColor=navy,
+            textColor=COLOR_CAFE,
             alignment=TA_LEFT,
             spaceBefore=6,
             spaceAfter=3,
@@ -182,7 +211,7 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu",
             fontSize=8.2,
             leading=10.5,
-            textColor=dark,
+            textColor=COLOR_TEXTO,
             alignment=TA_CENTER,
         ),
         "cell_left": ParagraphStyle(
@@ -191,7 +220,7 @@ def _build_styles() -> dict[str, ParagraphStyle]:
             fontName="DejaVu",
             fontSize=8.2,
             leading=10.5,
-            textColor=dark,
+            textColor=COLOR_TEXTO,
             alignment=TA_LEFT,
         ),
         "cell_header": ParagraphStyle(
@@ -228,47 +257,68 @@ def _styled_table(
 ) -> Table:
     tbl = Table(data, colWidths=col_widths, repeatRows=1)
     style_cmds = [
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1B365D")),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_ROJO),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, -1), 4.5),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4.5),
         ("LEFTPADDING", (0, 0), (-1, -1), 5),
         ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-        ("LINEABOVE", (0, 0), (-1, 0), 1.0, colors.HexColor("#1B365D")),
-        ("LINEBELOW", (0, 0), (-1, 0), 1.0, colors.HexColor("#1B365D")),
-        ("LINEBELOW", (0, -1), (-1, -1), 1.0, colors.HexColor("#1B365D")),
-        ("GRID", (0, 1), (-1, -1), 0.35, colors.HexColor("#CBD5E1")),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
+        ("LINEABOVE", (0, 0), (-1, 0), 1.2, COLOR_CAFE),
+        ("LINEBELOW", (0, 0), (-1, 0), 1.2, COLOR_CAFE),
+        ("LINEBELOW", (0, -1), (-1, -1), 1.2, COLOR_CAFE),
+        ("GRID", (0, 1), (-1, -1), 0.35, COLOR_CREMA_BORDE),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, COLOR_CREMA]),
     ]
     if highlight_rows:
         for r_idx in highlight_rows:
-            style_cmds.append(("BACKGROUND", (0, r_idx), (-1, r_idx), colors.HexColor("#ECFDF5")))
+            style_cmds.append(("BACKGROUND", (0, r_idx), (-1, r_idx), COLOR_ROJO_SUAVE))
     tbl.setStyle(TableStyle(style_cmds))
     return tbl
 
 
-def _draw_page_chrome(canvas, doc) -> None:
+def _draw_cover_frame(canvas, doc) -> None:
+    """Marco decorativo Rojo con Café para la portada (sin encabezado ni número de página)."""
     canvas.saveState()
     page_w, page_h = letter
+    canvas.setFillColor(COLOR_ROJO)
+    canvas.rect(doc.leftMargin, page_h - 1.3 * cm, page_w - doc.leftMargin - doc.rightMargin, 0.22 * cm, fill=1, stroke=0)
+    canvas.setFillColor(COLOR_CAFE)
+    canvas.rect(doc.leftMargin, page_h - 1.62 * cm, page_w - doc.leftMargin - doc.rightMargin, 0.09 * cm, fill=1, stroke=0)
+
+    canvas.setFillColor(COLOR_CAFE)
+    canvas.rect(doc.leftMargin, 1.3 * cm, page_w - doc.leftMargin - doc.rightMargin, 0.09 * cm, fill=1, stroke=0)
+    canvas.setFillColor(COLOR_ROJO)
+    canvas.rect(doc.leftMargin, 1.0 * cm, page_w - doc.leftMargin - doc.rightMargin, 0.22 * cm, fill=1, stroke=0)
+    canvas.restoreState()
+
+
+def _draw_page_chrome(canvas, doc) -> None:
+    """Encabezado y pie de página en Rojo con Café a partir de la página 2."""
+    canvas.saveState()
+    page_w, page_h = letter
+    canvas.setFont("DejaVu-Bold", 7.8)
+    canvas.setFillColor(COLOR_ROJO)
+    canvas.drawString(doc.leftMargin, page_h - 1.18 * cm, f"{TITULO_TRABAJO} — {FACULTAD}")
     canvas.setFont("DejaVu", 7.8)
-    canvas.setFillColor(colors.HexColor("#64748B"))
-    canvas.drawString(
-        doc.leftMargin,
-        page_h - 1.2 * cm,
-        "Tarea 3 — Ajuste de Parámetros con DOE (Opción A) | Recocido Simulado + 2-opt",
-    )
-    canvas.drawRightString(page_w - doc.rightMargin, page_h - 1.2 * cm, f"Matrícula {MATRICULA}")
-    canvas.setStrokeColor(colors.HexColor("#E2E8F0"))
-    canvas.setLineWidth(0.5)
+    canvas.setFillColor(COLOR_CAFE)
+    canvas.drawRightString(page_w - doc.rightMargin, page_h - 1.18 * cm, f"{AUTOR} | {MATRICULA}")
+
+    canvas.setStrokeColor(COLOR_ROJO)
+    canvas.setLineWidth(0.75)
     canvas.line(doc.leftMargin, page_h - 1.35 * cm, page_w - doc.rightMargin, page_h - 1.35 * cm)
+    canvas.setStrokeColor(COLOR_CAFE_CLARO)
+    canvas.setLineWidth(0.6)
     canvas.line(doc.leftMargin, 1.35 * cm, page_w - doc.rightMargin, 1.35 * cm)
+
+    canvas.setFillColor(COLOR_CAFE)
+    canvas.setFont("DejaVu", 8.0)
     canvas.drawCentredString(page_w / 2.0, 0.9 * cm, f"Página {doc.page}")
     canvas.restoreState()
 
 
 def build_pdf(output_path: Path = PDF_PATH) -> Path:
-    """Construye el reporte en PDF con los resultados experimentales y gráficas."""
+    """Construye el reporte en PDF con portada institucional, colores Rojo/Café y análisis completo."""
     _register_fonts()
     styles = _build_styles()
 
@@ -287,35 +337,82 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
         pagesize=letter,
         leftMargin=1.9 * cm,
         rightMargin=1.9 * cm,
-        topMargin=1.9 * cm,
+        topMargin=2.0 * cm,
         bottomMargin=1.8 * cm,
-        title="Tarea 3 - Ajuste de Parámetros mediante DOE",
+        title=f"{TITULO_TRABAJO} - Tarea 3",
         author=AUTOR,
     )
     usable_w = letter[0] - doc.leftMargin - doc.rightMargin
 
     story = []
 
-    # Encabezado
-    story.append(Paragraph("Tarea 3: Ajuste de Parámetros mediante Diseño de Experimentos (DOE)", styles["title"]))
-    story.append(
-        Paragraph(
-            "Ajuste de la Temperatura Inicial T<sub>0</sub> en Recocido Simulado con 2-opt sobre TSP<br/>"
-            "<b>Enfoque Seleccionado: Opción A — Diseño Factorial Completo 3×3</b>",
-            styles["subtitle"],
-        )
-    )
-    story.append(
-        Paragraph(
-            f"<b>Autor:</b> {AUTOR} &nbsp;|&nbsp; <b>Matrícula:</b> <font name='DejaVuMono'>{MATRICULA}</font><br/>"
-            f"<b>Repositorio público en GitHub:</b> "
-            f"<link href='{REPO_URL}' color='#1D4ED8'><u>{REPO_URL}</u></link>",
-            styles["meta"],
-        )
-    )
-    story.append(HRFlowable(width="100%", thickness=1.0, color=colors.HexColor("#CBD5E1"), spaceAfter=8))
+    # =========================================================================
+    # PORTADA (Página 1)
+    # =========================================================================
+    story.append(Spacer(1, 0.9 * cm))
+    logo_path = FIGURES_DIR / "uanl_logo.png"
+    if logo_path.exists():
+        story.append(_scaled_image(logo_path, max_width=11.5 * cm, max_height=5.6 * cm))
+        story.append(Spacer(1, 0.8 * cm))
 
-    # Resumen ejecutivo
+    story.append(Paragraph(FACULTAD, styles["cover_facultad"]))
+    story.append(Paragraph(CARRERA, styles["cover_carrera"]))
+    story.append(HRFlowable(width="55%", thickness=1.4, color=COLOR_CAFE, spaceBefore=4, spaceAfter=18))
+
+    story.append(Paragraph(TITULO_TRABAJO, styles["cover_title"]))
+    story.append(
+        Paragraph(
+            "<b>Tarea 3 — Ajuste de Parámetros con Diseño de Experimentos (DOE)</b><br/>"
+            "Ajuste de la Temperatura Inicial T<sub>0</sub> en Recocido Simulado con 2-opt sobre TSP<br/>"
+            "<i>Enfoque Seleccionado: Opción A — Diseño Factorial Completo 3×3</i>",
+            styles["cover_subtitle"],
+        )
+    )
+    story.append(Spacer(1, 1.3 * cm))
+
+    cover_card = Table(
+        [
+            [
+                Paragraph(
+                    f"<b>Alumno:</b> {AUTOR}<br/>"
+                    f"<b>Matrícula:</b> <font name='DejaVuMono'>{MATRICULA}</font><br/>"
+                    f"<b>Carrera:</b> {CARRERA}<br/>"
+                    f"<b>Facultad:</b> {FACULTAD}<br/>"
+                    f"<b>Repositorio en GitHub:</b> "
+                    f"<link href='{REPO_URL}' color='#8B1E1E'><u>{REPO_URL}</u></link>",
+                    styles["cover_meta"],
+                )
+            ]
+        ],
+        colWidths=[usable_w * 0.88],
+    )
+    cover_card.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), COLOR_CREMA),
+                ("BOX", (0, 0), (-1, -1), 1.0, COLOR_CAFE_CLARO),
+                ("LINEBEFORE", (0, 0), (0, -1), 4.0, COLOR_ROJO),
+                ("TOPPADDING", (0, 0), (-1, -1), 14),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
+                ("LEFTPADDING", (0, 0), (-1, -1), 16),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 16),
+            ]
+        )
+    )
+    cover_card.hAlign = "CENTER"
+    story.append(cover_card)
+    story.append(Spacer(1, 1.8 * cm))
+    story.append(
+        Paragraph(
+            "<font color='#5C3A21'><b>San Nicolás de los Garza, Nuevo León · Noviembre de 2026</b></font>",
+            styles["cover_meta"],
+        )
+    )
+    story.append(PageBreak())
+
+    # =========================================================================
+    # CONTENIDO PRINCIPAL (Página 2 en adelante)
+    # =========================================================================
     r_val = float(config["r"])
     anova_map = {row["fuente"]: row for _, row in anova_df.iterrows()}
     p_temp = float(anova_map["C(temperatura)"]["PR(>F)"])
@@ -339,8 +436,9 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
                     f"<i>p</i> = {p_temp:.6f}), el tamaño (<i>F</i> = {f_size:.2f}, <i>p</i> = {p_size:.2e}) y su "
                     f"interacción (<i>F</i> = {f_int:.4f}, <i>p</i> = {p_int:.6f}). Mediante remuestreo <i>bootstrap</i> "
                     "(<i>B</i> = 10,000, IC 95%) se concluyó que el mejor parámetro cambia conforme crece la instancia: "
-                    "<b>Bajo (<i>T<sub>0</sub>*</i> = 32.96)</b> para <i>n</i> = 5 y <b>Medio (<i>T<sub>0</sub>*</i> = 77.66)</b> "
-                    "para <i>n</i> = 10 y <i>n</i> = 15.",
+                    "<b>Bajo (<i>T<sub>0</sub>*</i> = 32.9556)</b> para <i>n</i> = 5 y <b>Medio (<i>T<sub>0</sub>*</i> = 77.6556)</b> "
+                    "para <i>n</i> = 10 y <i>n</i> = 15.<br/>"
+                    f"<b>Repositorio público:</b> <link href='{REPO_URL}' color='#8B1E1E'><u>{REPO_URL}</u></link>",
                     styles["abstract"],
                 )
             ]
@@ -350,8 +448,9 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
     abs_box.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F1F5F9")),
-                ("LINEBEFORE", (0, 0), (0, -1), 3.0, colors.HexColor("#1B365D")),
+                ("BACKGROUND", (0, 0), (-1, -1), COLOR_CREMA),
+                ("LINEBEFORE", (0, 0), (0, -1), 3.5, COLOR_ROJO),
+                ("BOX", (0, 0), (-1, -1), 0.5, COLOR_CREMA_BORDE),
                 ("TOPPADDING", (0, 0), (-1, -1), 7),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
                 ("LEFTPADDING", (0, 0), (-1, -1), 10),
@@ -486,7 +585,7 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
             f_str = f"{row['F']:.4f}"
             p_val = float(row["PR(>F)"])
             p_str = f"{p_val:.4e}" if p_val < 1e-3 else f"{p_val:.6f}"
-            sig_str = "<b>Sí (p &lt; 0.05)</b>" if bool(row["significativo_0.05"]) else "No"
+            sig_str = "<b><font color='#8B1E1E'>Sí (p &lt; 0.05)</font></b>" if bool(row["significativo_0.05"]) else "No"
         t2_rows.append(
             [
                 Paragraph(label_map.get(src, src), styles["cell_left"]),
@@ -527,7 +626,7 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
     story.append(
         KeepTogether(
             [
-                _scaled_image(FIGURES_DIR / "main_effects.png", max_width=usable_w, max_height=7.2 * cm),
+                _scaled_image(FIGURES_DIR / "main_effects.png", max_width=usable_w, max_height=7.0 * cm),
                 Paragraph(
                     "Figura 1. Efectos principales de la temperatura inicial T<sub>0</sub> (izquierda) y del tamaño del "
                     "problema TSP n (derecha). En promedio global, el nivel Medio (77.66) obtiene el menor costo medio (2695.0).",
@@ -539,7 +638,7 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
     story.append(
         KeepTogether(
             [
-                _scaled_image(FIGURES_DIR / "interaction.png", max_width=usable_w, max_height=7.3 * cm),
+                _scaled_image(FIGURES_DIR / "interaction.png", max_width=usable_w, max_height=7.1 * cm),
                 Paragraph(
                     "Figura 2. Gráfica de interacción Temperatura × Tamaño en escala absoluta (izquierda) y relativa "
                     "porcentual dentro de cada bloque (derecha). En n = 15 se observa una clara curva en «U» donde "
@@ -552,24 +651,23 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
     story.append(
         KeepTogether(
             [
-                _scaled_image(FIGURES_DIR / "bootstrap_intervals.png", max_width=usable_w, max_height=7.2 * cm),
+                _scaled_image(FIGURES_DIR / "bootstrap_intervals.png", max_width=usable_w, max_height=7.0 * cm),
                 Paragraph(
                     "Figura 3. Réplicas individuales, mediana bootstrap (B = 10,000) e intervalos de confianza del 95% "
-                    "para cada punto de diseño. En verde se destaca el nivel óptimo seleccionado por tamaño.",
+                    "para cada punto de diseño. En rojo se destaca el nivel óptimo seleccionado por tamaño.",
                     styles["caption"],
                 ),
             ]
         )
     )
 
-    # Sección 5: Tablas Bootstrap
-    story.append(Paragraph("5. Estimación Bootstrap e Intervalos de Confianza (95%)", styles["h1"]))
+    # Sección 5: Detalle Bootstrap
+    story.append(Paragraph("5. Estimación Bootstrap por Punto de Diseño (B = 10,000, IC 95%)", styles["h1"]))
     story.append(
         Paragraph(
             "Para cada uno de los 9 puntos de diseño se realizaron <i>B</i> = 10,000 remuestreos <i>bootstrap</i> con "
             "reemplazo sobre sus 10 réplicas, calculando la mediana <i>bootstrap</i> y su intervalo de confianza al 95% "
-            "(percentiles 2.5% y 97.5%). La Tabla 3 detalla los 9 puntos y la Tabla 4 consolida la temperatura óptima "
-            "para cada tamaño <i>n</i> ∈ {5, 10, 15}.",
+            "(percentiles 2.5% y 97.5%). La Tabla 3 detalla los 9 puntos evaluados.",
             styles["body"],
         )
     )
@@ -594,8 +692,8 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
         is_opt = (n_val, lvl) in opt_lookup
         if is_opt:
             highlight_t3.append(idx + 1)
-        lvl_txt = f"<b><font color='#166534'>{lvl} *</font></b>" if is_opt else lvl
-        med_txt = f"<b><font color='#166534'>{row['mediana_bootstrap']:.2f}</font></b>" if is_opt else f"{row['mediana_bootstrap']:.2f}"
+        lvl_txt = f"<b><font color='#8B1E1E'>{lvl} *</font></b>" if is_opt else lvl
+        med_txt = f"<b><font color='#8B1E1E'>{row['mediana_bootstrap']:.2f}</font></b>" if is_opt else f"{row['mediana_bootstrap']:.2f}"
         t3_rows.append(
             [
                 Paragraph(f"{n_val}", styles["cell"]),
@@ -633,14 +731,17 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
         )
     )
 
+    # Sección 6: Entregable Final
+    story.append(Paragraph("6. Entregable Final: Tabla Resumen y Análisis", styles["h1"]))
+
     t4_rows = [
         [
             Paragraph("Tamaño (n)", styles["cell_header"]),
             Paragraph("Óptimo Exacto", styles["cell_header"]),
             Paragraph("Nivel Óptimo", styles["cell_header"]),
-            Paragraph("T<sub>0</sub>* Óptima", styles["cell_header"]),
+            Paragraph("Temperatura T<sub>0</sub>*", styles["cell_header"]),
             Paragraph("Mediana Bootstrap", styles["cell_header"]),
-            Paragraph("IC 95% Bootstrap", styles["cell_header"]),
+            Paragraph("Intervalo de Confianza (95%)", styles["cell_header"]),
         ]
     ]
     for _, row in opt_df.iterrows():
@@ -650,45 +751,42 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
             [
                 Paragraph(f"<b>{n_val}</b>", styles["cell"]),
                 Paragraph(f"{exact_val:.4f}", styles["cell"]),
-                Paragraph(f"<b><font color='#166534'>{row['nivel_optimo']}</font></b>", styles["cell"]),
+                Paragraph(f"<b><font color='#8B1E1E'>{row['nivel_optimo']}</font></b>", styles["cell"]),
                 Paragraph(f"<b>{row['T_optima']:.4f}</b>", styles["cell"]),
                 Paragraph(f"<b>{row['mediana_bootstrap']:.4f}</b>", styles["cell"]),
                 Paragraph(f"[{row['ic_95_inf']:.4f}, {row['ic_95_sup']:.4f}]", styles["cell"]),
             ]
         )
-    story.append(Spacer(1, 4))
     story.append(
         KeepTogether(
             [
-                Paragraph("Tabla 4. Resumen de temperatura óptima seleccionada para cada tamaño TSP (n = 5, 10, 15).", styles["table_title"]),
+                Paragraph("Tabla 4. Tabla resumen: temperatura óptima, mediana bootstrap e IC 95% para n = 5, 10, 15.", styles["table_title"]),
                 _styled_table(
                     t4_rows,
-                    [usable_w * 0.12, usable_w * 0.15, usable_w * 0.15, usable_w * 0.14, usable_w * 0.18, usable_w * 0.26],
+                    [usable_w * 0.12, usable_w * 0.15, usable_w * 0.14, usable_w * 0.15, usable_w * 0.18, usable_w * 0.26],
                     highlight_rows=[1, 2, 3],
                 ),
             ]
         )
     )
 
-    # Sección 6: Respuestas analíticas
-    story.append(Paragraph("6. Conclusiones y Respuestas a las Preguntas Analíticas", styles["h1"]))
-
-    story.append(Paragraph("6.1 Mejor parámetro encontrado por tamaño y justificación (ANOVA + Bootstrap)", styles["h2"]))
+    story.append(Paragraph("6.1 Mejor parámetro encontrado por tamaño y cómo se llegó a esa conclusión", styles["h2"]))
     story.append(
         Paragraph(
-            "El ANOVA de dos factores confirmó diferencias reales debidas a la temperatura (<i>p</i> = 0.004062) y una "
-            "interacción altamente significativa Temperatura × Tamaño (<i>p</i> = 0.000411), justificando el análisis "
-            "<i>bootstrap</i> individual dentro de cada bloque:",
+            "El ANOVA de dos factores confirmó diferencias estadísticamente significativas debidas a la temperatura "
+            f"(<i>F</i> = {f_temp:.4f}, <i>p</i> = {p_temp:.6f}) y a su interacción con el tamaño "
+            f"(<i>F</i> = {f_int:.4f}, <i>p</i> = {p_int:.6f}), demostrando que la selección de <i>T<sub>0</sub>*</i> "
+            "debe realizarse por tamaño mediante los intervalos de confianza <i>bootstrap</i>:",
             styles["body"],
         )
     )
     story.append(
         Paragraph(
-            "• <b>Para <i>n</i> = 5 → Nivel Bajo (<i>T<sub>0</sub>*</i> = 32.9556):</b> Alcanzó el óptimo global exacto "
-            "(mediana <i>bootstrap</i> de <b>2313.4535</b>) con intervalo de confianza del 95% colapsado en "
+            "• <b>Para <i>n</i> = 5 → Nivel Bajo (<i>T<sub>0</sub>*</i> = 32.9556):</b> Alcanzó la mediana del óptimo "
+            "global exacto (<b>2313.4535</b>) con intervalo de confianza del 95% colapsado en "
             "<b>[2313.4535, 2313.4535]</b> (9 de 10 réplicas convergieron al óptimo) y la menor dispersión (media "
-            "2314.39, DE 2.96). Elevar <i>T<sub>0</sub></i> al nivel Alto (122.36) empeoró la mediana a 2318.14 porque "
-            "el algoritmo conserva ruido térmico al terminar las 18 épocas.",
+            "2314.39, DE 2.96). Subir <i>T<sub>0</sub></i> a Alto (122.36) empeoró la mediana a 2318.14 porque el "
+            "sistema conserva agitación térmica residual al concluir las 18 épocas.",
             styles["bullet"],
         )
     )
@@ -696,64 +794,64 @@ def build_pdf(output_path: Path = PDF_PATH) -> Path:
         Paragraph(
             "• <b>Para <i>n</i> = 10 → Nivel Medio (<i>T<sub>0</sub>*</i> = 77.6556):</b> Los tres niveles empataron en "
             "mediana <i>bootstrap</i> exactamente en el óptimo global Held-Karp (<b>2676.4468</b>, IC 95% "
-            "<b>[2676.4468, 2785.7350]</b>). Al aplicar el criterio secundario de desempate (menor media muestral y "
-            "menor desviación estándar entre réplicas), se seleccionó el nivel <b>Medio</b>, que obtuvo la media más baja "
-            "(2722.74 frente a 2727.10 de Bajo) y menor dispersión (DE 60.23 frente a 71.04 de Bajo).",
+            "<b>[2676.4468, 2785.7350]</b>). Aplicando el criterio de desempate por menor costo promedio y menor "
+            "variabilidad entre réplicas, se eligió el nivel <b>Medio</b> al presentar la menor media muestral "
+            "(2722.74 frente a 2727.10 de Bajo) y menor desviación estándar (60.23 frente a 71.04 de Bajo).",
             styles["bullet"],
         )
     )
     story.append(
         Paragraph(
-            "• <b>Para <i>n</i> = 15 → Nivel Medio (<i>T<sub>0</sub>*</i> = 77.6556):</b> Resultó ganador categórico con "
-            "mediana <i>bootstrap</i> de <b>3028.0827</b> (a solo 1.32% del óptimo exacto 2988.6778) e IC 95% estrecho de "
-            "<b>[2988.6778, 3061.9949]</b>. Su intervalo de confianza es <b>completamente disjunto</b> respecto al de "
-            "Bajo ([3129.7321, 3468.3587], mediana 3331.42), demostrando con más del 95% de confianza que Bajo sufre "
-            "congelamiento prematuro. Además, Medio supera claramente en mediana y estabilidad a Alto (3168.24, IC "
-            "[3045.1977, 3395.7156]).",
+            "• <b>Para <i>n</i> = 15 → Nivel Medio (<i>T<sub>0</sub>*</i> = 77.6556):</b> Obtuvo el mejor desempeño "
+            "categórico con mediana <i>bootstrap</i> de <b>3028.0827</b> (a solo 1.32% del óptimo exacto 2988.6778) e "
+            "IC 95% estrecho de <b>[2988.6778, 3061.9949]</b>. Su intervalo de confianza es <b>completamente disjunto</b> "
+            "respecto al nivel Bajo ([3129.7321, 3468.3587], mediana 3331.42), confirmando con más del 95% de confianza "
+            "que Bajo queda atrapado por congelamiento prematuro. Además, Medio supera ampliamente en mediana y "
+            "estabilidad a Alto (3168.24, IC [3045.1977, 3395.7156]).",
             styles["bullet"],
         )
     )
 
-    story.append(Paragraph("6.2 ¿Cambia la temperatura óptima con el tamaño? Tendencia entre n y T*", styles["h2"]))
+    story.append(Paragraph("6.2 ¿La temperatura óptima cambia con el tamaño del problema? ¿Hay una tendencia clara entre n y T*?", styles["h2"]))
     story.append(
         Paragraph(
-            "<b>Sí, la temperatura óptima cambia con el tamaño del problema y exhibe una tendencia creciente al aumentar "
-            "<i>n</i></b>, pasando de <b><i>T<sub>0</sub>*</i> = 32.96 (Bajo)</b> en <i>n</i> = 5 a "
-            "<b><i>T<sub>0</sub>*</i> = 77.66 (Medio)</b> en <i>n</i> = 10 y <i>n</i> = 15. Físicamente esto responde a "
-            "tres mecanismos del paisaje de búsqueda 2-opt:",
+            "<b>Sí, la temperatura óptima cambia con el tamaño del problema y existe una tendencia creciente de "
+            "<i>T*</i> respecto a <i>n</i></b>, pasando de <b><i>T<sub>0</sub>*</i> = 32.9556 (Bajo)</b> en <i>n</i> = 5 "
+            "a <b><i>T<sub>0</sub>*</i> = 77.6556 (Medio)</b> en <i>n</i> = 10 y <i>n</i> = 15. Físicamente, esta "
+            "tendencia se explica por tres factores propios del algoritmo:",
             styles["body"],
         )
     )
     story.append(
         Paragraph(
-            "1. <b>Crecimiento factorial del espacio de tours:</b> El número de recorridos no dirigidos pasa de "
-            "(5−1)!/2 = <b>12</b> en <i>n</i> = 5 a <b>181,440</b> en <i>n</i> = 10 y <b>4.36 × 10¹⁰</b> en <i>n</i> = 15. "
-            "En <i>n</i> = 5 el paisaje carece de mínimos locales profundos, por lo que una temperatura inicial baja "
-            "maximiza la explotación inmediata.",
+            "1. <b>Expansión factorial del espacio de búsqueda:</b> El número de tours no dirigidos crece como "
+            "(<i>n</i>−1)!/2: pasa de apenas <b>12</b> recorridos en <i>n</i> = 5 a <b>181,440</b> en <i>n</i> = 10 y "
+            "<b>4.36 × 10¹⁰</b> en <i>n</i> = 15. En instancias muy pequeñas casi no hay mínimos locales profundos, por "
+            "lo que una temperatura inicial baja acelera la convergencia sin ruido final.",
             styles["bullet"],
         )
     )
     story.append(
         Paragraph(
-            "2. <b>Atrapamiento en óptimos locales al crecer <i>n</i>:</b> En <i>n</i> = 15 abundan óptimos locales "
-            "2-opt subóptimos; con <i>T<sub>0</sub></i> = 32.96 el criterio de Metropolis rechaza casi desde el inicio "
-            "los movimientos Δ<i>E</i> &gt; 0 y queda atrapado en soluciones un 10% más costosas. Aumentar "
-            "<i>T<sub>0</sub></i> a 77.66 aporta la energía térmica necesaria para escapar de esas cuencas.",
+            "2. <b>Proliferación de mínimos locales 2-opt en instancias mayores:</b> Al alcanzar <i>n</i> = 15 surgen "
+            "múltiples óptimos locales subóptimos. Con <i>T<sub>0</sub></i> = 32.96, Metropolis rechaza casi de inmediato "
+            "movimientos deteriorantes (Δ<i>E</i> &gt; 0) y queda atrapado en recorridos ~10% más costosos; elevar "
+            "<i>T<sub>0</sub></i> a 77.66 otorga la energía térmica necesaria para escapar de esas cuencas.",
             styles["bullet"],
         )
     )
     story.append(
         Paragraph(
-            "3. <b>Compromiso exploración–explotación bajo horizonte finito:</b> Aunque <i>T*</i> sube con <i>n</i>, "
-            "exceder la temperatura al nivel Alto (122.36) con 18 épocas deteriora el resultado en <i>n</i> = 15 "
-            "(mediana 3168.24 frente a 3028.08) porque el sistema finaliza con demasiada agitación térmica "
-            "(<i>T<sub>f</sub></i> = 12.24). Así, conforme crece <i>n</i>, la temperatura óptima se desplaza de un "
-            "régimen puramente explotativo (Bajo) hacia un punto intermedio equilibrado (Medio).",
+            "3. <b>Equilibrio exploración–explotación bajo presupuesto finito:</b> Aunque <i>T*</i> aumenta con "
+            "<i>n</i>, incrementarla en exceso al nivel Alto (122.36) con 18 épocas vuelve a degradar la solución en "
+            "<i>n</i> = 15 (3168.24 frente a 3028.08) porque la cadena concluye demasiado caliente "
+            "(<i>T<sub>f</sub></i> = 12.24) y no consolida el descenso final. Por ello, conforme aumenta <i>n</i>, la "
+            "temperatura óptima evoluciona desde regímenes fríos de rápida explotación hacia valores intermedios balanceados.",
             styles["bullet"],
         )
     )
 
-    doc.build(story, onFirstPage=_draw_page_chrome, onLaterPages=_draw_page_chrome)
+    doc.build(story, onFirstPage=_draw_cover_frame, onLaterPages=_draw_page_chrome)
     return output_path
 
 
