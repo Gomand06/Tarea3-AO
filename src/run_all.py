@@ -8,6 +8,7 @@ Script principal para reproducir de principio a fin la Tarea 3 (DOE - Opción A)
 
 from __future__ import annotations
 
+from build_pdf_report import build_pdf
 from doe_experiment import run_experiment
 from plots import generate_all_plots
 from stats_analysis import run_analysis
@@ -36,6 +37,12 @@ def main() -> None:
     print("PASO 4: Generación de Gráficas")
     print("=" * 70)
     generate_all_plots()
+
+    print("\n" + "=" * 70)
+    print("PASO 5: Generación de Reporte PDF")
+    print("=" * 70)
+    pdf_path = build_pdf()
+    print(f"Reporte PDF generado en {pdf_path}")
 
 
 if __name__ == "__main__":

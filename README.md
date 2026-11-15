@@ -34,6 +34,7 @@ Tarea3-AO/
 │   ├── doe_experiment.py               # Ejecución de las 90 corridas (Opción A)
 │   ├── stats_analysis.py               # ANOVA de dos factores (statsmodels) y Bootstrap (B = 10,000)
 │   ├── plots.py                        # Gráficas de efectos principales, interacción e IC 95%
+│   ├── build_pdf_report.py             # Generador automático del reporte final en PDF
 │   └── run_all.py                      # Script maestro para reproducir todo el experimento
 ├── results/
 │   ├── experiment_config.json          # Metadatos y niveles exactos del experimento
@@ -46,6 +47,7 @@ Tarea3-AO/
 │   ├── interaction.png / .pdf
 │   └── bootstrap_intervals.png / .pdf
 └── report/
+    ├── reporte_tarea3.pdf              # Reporte final en PDF con tablas, gráficas y análisis
     ├── reporte_tarea3.tex              # Código LaTeX listo para compilar en Overleaf o local
     └── figures/                        # Copia de figuras para compilación directa en Overleaf
 ```
