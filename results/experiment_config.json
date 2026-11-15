@@ -1,0 +1,29 @@
+{
+  "matricula": 2225437,
+  "r": 0.7148901388751733,
+  "opcion": "A - Diseño Factorial Completo 3x3",
+  "t_min": 1.0,
+  "t_max": 150.0,
+  "alpha": 0.88,
+  "epochs": 18,
+  "steps_per_epoch_rule": "n",
+  "n_replicas": 10,
+  "total_corridas": 90,
+  "niveles": [
+    {
+      "nivel": "Bajo",
+      "fraccion": 0.21446704166255198,
+      "temperatura": 32.955589207720244
+    },
+    {
+      "nivel": "Medio",
+      "fraccion": 0.514467041662552,
+      "temperatura": 77.65558920772024
+    },
+    {
+      "nivel": "Alto",
+      "fraccion": 0.8144670416625519,
+      "temperatura": 122.35558920772023
+    }
+  ]
+}
